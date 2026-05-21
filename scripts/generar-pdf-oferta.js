@@ -68,9 +68,9 @@ async function generarPDF() {
 
     await page.pdf({
       path: pdfPath,
-      format: 'A4',
+      width: '210mm',
+      height: '297mm',
       landscape: false,
-      preferCSSPageSize: false,
       margin: {
         top: 0,
         bottom: 0,
@@ -78,7 +78,6 @@ async function generarPDF() {
         right: 0
       },
       printBackground: true,
-      scale: 1.0,
       displayHeaderFooter: false,
       timeout: 30000
     });
