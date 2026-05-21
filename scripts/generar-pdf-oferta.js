@@ -20,8 +20,8 @@ async function generarPDF() {
 
     const page = await browser.newPage();
 
-    // Viewport EXTREMADAMENTE vertical - IMPOSIBLE de ser apaisado
-    await page.setViewport({ width: 300, height: 900, deviceScaleFactor: 1 });
+    // Viewport ultra-vertical para FORZAR retrato sin excepción
+    await page.setViewport({ width: 210, height: 297, deviceScaleFactor: 2 });
 
     // Configurar para no fallar en errores de red
     page.on('error', err => {
