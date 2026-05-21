@@ -206,6 +206,9 @@ export default function OfertaReforma() {
                     >
                       📺 Ver Video Completo
                     </a>
+                    <p className="text-gray-600 text-xs mt-3">
+                      O copia: homeux-green.vercel.app/oferta-reforma
+                    </p>
                   </div>
                 ) : servicio.imagenes && servicio.imagenes.length > 0 && (
                   <div className="my-8 flex flex-col items-center justify-center">
