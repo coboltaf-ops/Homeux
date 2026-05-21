@@ -198,16 +198,14 @@ export default function OfertaReforma() {
                         </video>
                       </div>
                     </div>
-                    <button
-                      onClick={() => {
-                        console.log('Botón clickeado');
-                        setVideoModalOpen(true);
-                      }}
-                      type="button"
-                      className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold text-sm cursor-pointer"
+                    <a
+                      href="https://homeux-green.vercel.app/oferta-reforma"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold text-sm cursor-pointer inline-block"
                     >
                       📺 Ver Video Completo
-                    </button>
+                    </a>
                   </div>
                 ) : servicio.imagenes && servicio.imagenes.length > 0 && (
                   <div className="my-8 flex flex-col items-center justify-center">
@@ -386,6 +384,18 @@ export default function OfertaReforma() {
                 <div>
                   <p className="text-2xl font-semibold">📍 Medellín, Colombia</p>
                 </div>
+              </div>
+
+              <div className="mt-12 pt-8 border-t border-gray-700">
+                <p className="text-sm text-gray-300 mb-3">Para ver la versión interactiva con video:</p>
+                <a
+                  href="https://homeux-green.vercel.app/oferta-reforma"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-lg font-bold text-blue-400 hover:text-blue-300 underline"
+                >
+                  homeux-green.vercel.app/oferta-reforma
+                </a>
               </div>
             </div>
           </div>
