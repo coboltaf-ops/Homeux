@@ -172,7 +172,7 @@ export default function OfertaReforma() {
 
           {/* PÁGINAS 3+: UN SERVICIO POR PÁGINA */}
           {servicios.map((servicio, idx) => (
-            <div key={servicio.id} className="pdf-page bg-white h-screen p-8 flex flex-col justify-center w-full">
+            <div key={servicio.id} className="pdf-page bg-white h-screen p-8 flex flex-col justify-center w-full" id={servicio.id === 9 ? 'video-pintura' : undefined}>
               <div className="w-full max-w-3xl mx-auto">
                 <div className="mb-8 border-b-4 border-blue-600 pb-4 text-center">
                   <p className="text-blue-600 font-semibold text-sm">SERVICIO {idx + 1} DE {servicios.length}</p>
@@ -199,7 +199,7 @@ export default function OfertaReforma() {
                       </div>
                     </div>
                     <a
-                      href="https://homeux-green.vercel.app/oferta-reforma"
+                      href="https://homeux-green.vercel.app/oferta-reforma#video-pintura"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold text-sm cursor-pointer inline-block"
@@ -389,7 +389,7 @@ export default function OfertaReforma() {
               <div className="mt-12 pt-8 border-t border-gray-700">
                 <p className="text-sm text-gray-300 mb-3">Para ver la versión interactiva con video:</p>
                 <a
-                  href="https://homeux-green.vercel.app/oferta-reforma"
+                  href="https://homeux-green.vercel.app/oferta-reforma#video-pintura"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-lg font-bold text-blue-400 hover:text-blue-300 underline"
