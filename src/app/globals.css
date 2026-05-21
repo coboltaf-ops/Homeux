@@ -1,26 +1,369 @@
 @import "tailwindcss";
 
+/* Estilos para PDF - garantizar que no haya páginas extras */
+.pdf-page {
+  margin: 0 !important;
+  padding: 0 !important;
+  page-break-after: avoid !important;
+  page-break-inside: avoid !important;
+  overflow: hidden !important;
+  break-after: avoid !important;
+}
+
+.pdf-page:not(:last-child) {
+  page-break-after: always !important;
+}
+
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --foreground: #000000;
+  --label-color: #1d4ed8;
+  --value-color: #000000;
+  --panel-bg: #ffffff;
+  --panel-border: #e2e8f0;
+  --input-bg: #f1f5f9;
+  --input-border: #cbd5e1;
+  --muted-bg: #f8fafc;
+  --sidebar-bg: #1e3a8a;
+  --title-bg: #1e3a8a;
 }
 
 body {
-  background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ============================================================
+   TEMA — TODOS los modulos del area autenticada [data-app="main"]
+   El login (/) NO se ve afectado por estas reglas.
+   ============================================================ */
+
+/* Fondo del area autenticada (no toca login) */
+[data-app="main"] {
+  background: var(--background);
+  min-height: 100vh;
+}
+
+/* --- Cards / contenedores oscuros translucidos → blanco ----- */
+[data-app="main"] [style*="rgba(255,255,255,0.05)"] {
+  background: var(--panel-bg) !important;
+  border-color: var(--panel-border) !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+[data-app="main"] [style*="rgba(15,23,42,0.98)"] {
+  background: var(--panel-bg) !important;
+  border-color: var(--panel-border) !important;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18);
+}
+[data-app="main"] [style*="rgba(255,255,255,0.06)"] {
+  background: var(--input-bg) !important;
+  border-color: var(--input-border) !important;
+}
+[data-app="main"] [style*="rgba(41,15,5,0.9)"] {
+  background: var(--input-bg) !important;
+  border-color: var(--input-border) !important;
+}
+[data-app="main"] [style*="rgba(255,255,255,0.04)"] {
+  background: var(--muted-bg) !important;
+  border-color: var(--panel-border) !important;
+}
+[data-app="main"] [style*="#1a1a1a"] {
+  background: var(--panel-bg) !important;
+}
+
+/* --- Sidebar: fondo azul rey oscuro ------------------------- */
+aside.bg-black\/30 {
+  background: var(--sidebar-bg) !important;
+  backdrop-filter: none !important;
+  border-right: 1px solid #1e40af !important;
+  box-shadow: 2px 0 12px rgba(15, 23, 42, 0.15);
+}
+aside.bg-black\/30 p {
+  color: #ffffff !important;
+}
+/* Logo HomeUX en rojo fuerte (excepcion al blanco del sidebar y al negro del tema) */
+[data-logo="homeux"],
+aside.bg-black\/30 p[data-logo="homeux"],
+aside.bg-black\/30 h1[data-logo="homeux"],
+[data-app="main"] [data-logo="homeux"],
+[data-app="main"] p[data-logo="homeux"],
+[data-app="main"] h1[data-logo="homeux"] {
+  color: #dc2626 !important;
+  background: transparent !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  display: inline-block;
+}
+
+/* Subtitulo "Servicios del Hogar" — blanco intenso en sidebar, azul rey en cabecera */
+aside.bg-black\/30 p[data-logo-sub="homeux"] {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+[data-app="main"] header p[data-logo-sub="homeux"] {
+  color: #1d4ed8 !important;
+}
+aside.bg-black\/30 svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+aside.bg-black\/30 [style*="rgba(30,64,175,0.2)"] {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Items del menu lateral — alta especificidad para sobreescribir
+   las reglas globales de recolor. Blanco intenso siempre. */
+aside.bg-black\/30 nav a,
+aside.bg-black\/30 nav a.text-white,
+aside.bg-black\/30 nav a.text-white\/60,
+aside.bg-black\/30 nav a span,
+aside.bg-black\/30 nav a svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+aside.bg-black\/30 nav a {
+  font-weight: 600 !important;
+}
+aside.bg-black\/30 nav a:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+aside.bg-black\/30 nav a.text-white {
+  background: rgba(255, 255, 255, 0.22) !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+/* Boton "Cerrar Sesion" en sidebar */
+aside.bg-black\/30 button.text-red-400 {
+  color: #fca5a5 !important;
+}
+aside.bg-black\/30 button.text-red-400:hover {
+  color: #ffffff !important;
+  background: rgba(239, 68, 68, 0.25) !important;
+}
+aside.bg-black\/30 button.text-red-400 svg {
+  stroke: currentColor !important;
+}
+
+/* --- Header superior de (main) ------------------------------ */
+[data-app="main"] header[style*="border-bottom"] {
+  background: #ffffff !important;
+  border-bottom-color: var(--panel-border) !important;
+}
+[data-app="main"] header p.text-white {
+  color: var(--value-color) !important;
+  background: transparent !important;
+  padding: 0 !important;
+  display: block !important;
+}
+
+/* --- Labels (titulos de campo): pill azul rey + texto BLANCO --- */
+[data-app="main"] form label {
+  color: #ffffff !important;
+  background: var(--label-color) !important;
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em;
+  padding: 0.28rem 0.7rem !important;
+  border-radius: 0.45rem !important;
+  display: inline-block !important;
+  margin-bottom: 0.4rem;
+  box-shadow: 0 2px 4px rgba(29, 78, 216, 0.25);
+}
+
+[data-app="main"] .text-white\/40,
+[data-app="main"] .text-white\/50 {
+  color: #ffffff !important;
+  background: var(--label-color) !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em;
+  padding: 0.22rem 0.6rem !important;
+  border-radius: 0.4rem !important;
+  display: inline-block !important;
+  margin-bottom: 0.3rem !important;
+  box-shadow: 0 2px 4px rgba(29, 78, 216, 0.25);
+}
+
+[data-app="main"] svg.text-white\/40,
+[data-app="main"] svg.text-white\/50,
+[data-app="main"] path.text-white\/40,
+[data-app="main"] path.text-white\/50 {
+  color: inherit !important;
+  background: transparent !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+[data-app="main"] span[style*="rgba(255,255,255,0.5)"],
+[data-app="main"] p[style*="rgba(255,255,255,0.5)"] {
+  color: #ffffff !important;
+  background: var(--label-color) !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  padding: 0.22rem 0.6rem !important;
+  border-radius: 0.4rem !important;
+  display: inline-block !important;
+  margin-bottom: 0.25rem;
+  box-shadow: 0 2px 4px rgba(29, 78, 216, 0.25);
+}
+
+/* --- Titulos en azul oscuro con letras blancas -------------- */
+[data-app="main"] h1.text-white {
+  color: #ffffff !important;
+  background: var(--title-bg) !important;
+  padding: 0.55rem 1.1rem;
+  border-radius: 0.7rem;
+  display: inline-block;
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
+}
+[data-app="main"] h2.text-white {
+  color: #ffffff !important;
+  background: var(--title-bg) !important;
+  padding: 0.4rem 0.85rem;
+  border-radius: 0.55rem;
+  display: inline-block;
+}
+[data-app="main"] h3.text-white {
+  color: #ffffff !important;
+  background: var(--title-bg) !important;
+  padding: 0.3rem 0.7rem;
+  border-radius: 0.5rem;
+  display: inline-block;
+}
+
+/* --- Encabezados de tabla en azul oscuro -------------------- */
+[data-app="main"] thead th {
+  color: #ffffff !important;
+  background: var(--title-bg) !important;
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-bottom: 1px solid #1e40af !important;
+}
+
+/* --- Inputs / selects / textareas: fondo oscuro + texto BLANCO --- */
+[data-app="main"] input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+[data-app="main"] select,
+[data-app="main"] textarea {
+  color: #ffffff !important;
+  background: #0f172a !important;
+  border-color: #1e293b !important;
+}
+[data-app="main"] input::placeholder,
+[data-app="main"] textarea::placeholder {
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+[data-app="main"] select option {
+  background: #0f172a !important;
+  color: #ffffff !important;
+}
+
+/* --- Valores fuera de modales (tablas, etc.): negro fuerte ----- */
+[data-app="main"] .text-white:not(button):not(button *):not(h1):not(h2):not(h3) {
+  color: var(--value-color) !important;
+}
+[data-app="main"] .text-white\/60:not(button):not(button *),
+[data-app="main"] .text-white\/70:not(button):not(button *),
+[data-app="main"] .text-white\/80:not(button):not(button *),
+[data-app="main"] .text-white\/90:not(button):not(button *) {
+  color: #1e293b !important;
+}
+[data-app="main"] .text-white\/30:not(button):not(button *) {
+  color: #94a3b8 !important;
+}
+
+/* Tabla — celdas negras (las listas se ven en negro fuerte) */
+[data-app="main"] tbody td {
+  color: var(--value-color);
+}
+[data-app="main"] tbody td.text-white {
+  color: var(--value-color) !important;
+}
+
+/* --- Valores DENTRO de modales: chip oscuro + texto BLANCO ----- */
+[data-app="main"] .fixed.inset-0.z-\[100\] p.text-white,
+[data-app="main"] .fixed.inset-0.z-\[100\] p.text-sm.text-white {
+  color: #ffffff !important;
+  background: #0f172a !important;
+  padding: 0.4rem 0.75rem !important;
+  border-radius: 0.45rem !important;
+  display: inline-block !important;
+  font-weight: 600 !important;
+  border: 1px solid #1e293b !important;
+}
+[data-app="main"] tbody tr {
+  border-bottom: 1px solid var(--panel-border) !important;
+}
+[data-app="main"] tbody tr:hover {
+  background: var(--muted-bg) !important;
+}
+
+/* Bordes blancos translucidos en (main) */
+[data-app="main"] [style*="rgba(255,255,255,0.1)"],
+[data-app="main"] [style*="rgba(255,255,255,0.05)"][style*="border"] {
+  border-color: var(--panel-border) !important;
+}
+
+/* Imagenes con borde translucido */
+[data-app="main"] img[style*="rgba(255,255,255,0.15)"],
+[data-app="main"] img[style*="rgba(255,255,255,0.2)"] {
+  border-color: var(--panel-border) !important;
+}
+
+/* ============================================================
+   BADGES DE SITUACION — colores intensos por estado
+   Se aplica a todos los modulos con [data-situacion="..."]
+   ============================================================ */
+[data-app="main"] [data-situacion] {
+  display: inline-block;
+  padding: 0.35rem 0.85rem !important;
+  border-radius: 0.5rem !important;
+  font-weight: 800 !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.05em !important;
+  color: #ffffff !important;
+  border: none !important;
+  text-transform: uppercase;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+/* Verde intenso — estados positivos */
+[data-app="main"] [data-situacion="Activo"],
+[data-app="main"] [data-situacion="Aprobada"],
+[data-app="main"] [data-situacion="Completada"] {
+  background: #15803d !important;
+  box-shadow: 0 3px 8px rgba(21, 128, 61, 0.45) !important;
+}
+
+/* Naranja intenso — nuevos / pendientes */
+[data-app="main"] [data-situacion="Nueva"],
+[data-app="main"] [data-situacion="Pendiente"],
+[data-app="main"] [data-situacion="Prospecto"],
+[data-app="main"] [data-situacion="En Evaluacion"] {
+  background: #ea580c !important;
+  box-shadow: 0 3px 8px rgba(234, 88, 12, 0.45) !important;
+}
+
+/* Azul intenso — en proceso */
+[data-app="main"] [data-situacion="En Proceso"] {
+  background: #1d4ed8 !important;
+  box-shadow: 0 3px 8px rgba(29, 78, 216, 0.45) !important;
+}
+
+/* Rojo intenso — estados negativos */
+[data-app="main"] [data-situacion="Inactivo"],
+[data-app="main"] [data-situacion="Cancelada"],
+[data-app="main"] [data-situacion="Rechazada"] {
+  background: #b91c1c !important;
+  box-shadow: 0 3px 8px rgba(185, 28, 28, 0.45) !important;
+}
+
+/* Fallback gris oscuro para situaciones no mapeadas */
+[data-app="main"] [data-situacion]:not([data-situacion="Activo"]):not([data-situacion="Aprobada"]):not([data-situacion="Completada"]):not([data-situacion="Nueva"]):not([data-situacion="Pendiente"]):not([data-situacion="Prospecto"]):not([data-situacion="En Evaluacion"]):not([data-situacion="En Proceso"]):not([data-situacion="Inactivo"]):not([data-situacion="Cancelada"]):not([data-situacion="Rechazada"]) {
+  background: #475569 !important;
 }

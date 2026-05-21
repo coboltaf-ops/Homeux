@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HomeUx - Cargar Datos de Prueba</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      max-width: 620px;
+      width: 90%;
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+      border: 1px solid #334155;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      color: #f8fafc;
+    }
+    .subtitle {
+      color: #94a3b8;
+      margin-bottom: 28px;
+      font-size: 0.95rem;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .stat {
+      background: #334155;
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+    }
+    .stat .number { font-size: 1.6rem; font-weight: 700; color: #38bdf8; }
+    .stat .label { font-size: 0.75rem; color: #94a3b8; margin-top: 4px; }
+    .buttons { display: flex; gap: 12px; }
+    button {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.2s;
+    }
+    button:active { transform: scale(0.97); }
+    .btn-load { background: #22c55e; color: white; }
+    .btn-load:hover { background: #16a34a; }
+    .btn-clean { background: #dc2626; color: white; }
+    .btn-clean:hover { background: #b91c1c; }
+    .msg {
+      margin-top: 20px;
+      padding: 14px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 500;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      display: none;
+    }
+    .msg.success { display: block; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); color: #86efac; }
+    .msg.error { display: block; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>HomeUx - Datos de Prueba</h1>
+    <p class="subtitle">Carga datos realistas para desarrollo y testing (Lima, Peru)</p>
+    <div class="stats">
+      <div class="stat"><div class="number">8</div><div class="label">Clientes</div></div>
+      <div class="stat"><div class="number">6</div><div class="label">Solicitudes</div></div>
+      <div class="stat"><div class="number">10</div><div class="label">Productos</div></div>
+      <div class="stat"><div class="number">3</div><div class="label">Cotizaciones</div></div>
+      <div class="stat"><div class="number">4</div><div class="label">Personal</div></div>
+      <div class="stat"><div class="number">7</div><div class="label">Stores</div></div>
+    </div>
+    <div class="buttons">
+      <button class="btn-load" onclick="cargarDatos()">Cargar Datos</button>
+      <button class="btn-clean" onclick="limpiarDatos()">Limpiar</button>
+    </div>
+    <div id="msg" class="msg"></div>
+  </div>
+
+<script>
+// ============================================================
+// CONFIGURACION (homeux-config-storage)
+// ============================================================
+const configData = {
+  state: {
+    paises: [
+      { id: "1", nombre: "Peru" },
+      { id: "2", nombre: "Colombia" },
+      { id: "3", nombre: "Chile" },
+      { id: "4", nombre: "Ecuador" }
+    ],
+    ciudades: [
+      { id: "1", nombre: "Lima" },
+      { id: "2", nombre: "Miraflores" },
+      { id: "3", nombre: "San Isidro" },
+      { id: "4", nombre: "Arequipa" },
+      { id: "5", nombre: "Trujillo" },
+      { id: "6", nombre: "Cusco" }
+    ],
+    tiposTrabajo: [
+      { id: "1", nombre: "Plomeria" },
+      { id: "2", nombre: "Electricidad" },
+      { id: "3", nombre: "Pintura" },
+      { id: "4", nombre: "Limpieza Profunda" },
+      { id: "5", nombre: "Jardineria" },
+      { id: "6", nombre: "Cerrajeria" },
+      { id: "7", nombre: "Carpinteria" },
+      { id: "8", nombre: "Instalaciones" },
+      { id: "9", nombre: "Reparaciones Generales" },
+      { id: "10", nombre: "Remodelacion" }
+    ],
+    situacionesSolicitud: [
+      { id: "1", nombre: "Nueva" },
+      { id: "2", nombre: "En Proceso" },
+      { id: "3", nombre: "Completada" },
+      { id: "4", nombre: "Cancelada" }
+    ],
+    tiposVivienda: [
+      { id: "1", nombre: "Casa" },
+      { id: "2", nombre: "Apartamento" },
+      { id: "3", nombre: "Townhouse" },
+      { id: "4", nombre: "Local Comercial" },
+      { id: "5", nombre: "Oficina" }
+    ],
+    situacionesCliente: [
+      { id: "1", nombre: "Activo" },
+      { id: "2", nombre: "Inactivo" },
+      { id: "3", nombre: "Prospecto" }
+    ],
+    tiposIdentificacion: [
+      { id: "1", nombre: "DNI" },
+      { id: "2", nombre: "RUC" },
+      { id: "3", nombre: "Pasaporte" },
+      { id: "4", nombre: "Carnet de Extranjeria" }
+    ],
+    estadosCiviles: [
+      { id: "1", nombre: "Soltero" },
+      { id: "2", nombre: "Casado" },
+      { id: "3", nombre: "Divorciado" },
+      { id: "4", nombre: "Viudo" },
+      { id: "5", nombre: "Union Libre" }
+    ],
+    formaciones: [
+      { id: "1", nombre: "Primaria" },
+      { id: "2", nombre: "Secundaria" },
+      { id: "3", nombre: "Tecnico" },
+      { id: "4", nombre: "Universitario" },
+      { id: "5", nombre: "Postgrado" },
+      { id: "6", nombre: "Autodidacta" }
+    ],
+    habilidades: [
+      { id: "1", nombre: "Plomeria Residencial" },
+      { id: "2", nombre: "Electricidad Residencial" },
+      { id: "3", nombre: "Pintura Interior" },
+      { id: "4", nombre: "Pintura Exterior" },
+      { id: "5", nombre: "Jardineria" },
+      { id: "6", nombre: "Carpinteria" },
+      { id: "7", nombre: "Cerrajeria" },
+      { id: "8", nombre: "Limpieza Profunda" },
+      { id: "9", nombre: "Instalacion de Pisos" },
+      { id: "10", nombre: "Albaileria" }
+    ],
+    situacionesPersonal: [
+      { id: "1", nombre: "Activo" },
+      { id: "2", nombre: "Inactivo" },
+      { id: "3", nombre: "En Evaluacion" }
+    ]
+  },
+  version: 0
+};
+
+// ============================================================
+// AUTH (homeux-auth-storage)
+// ============================================================
+const authData = {
+  state: {
+    user: null,
+    users: [
+      { usuario: "admin", clave: "admin", nombre: "Administrador", rol: "Admin" },
+      { usuario: "jpalomares", clave: "1234", nombre: "Jose Palomares", rol: "Admin" },
+      { usuario: "mgarcia", clave: "1234", nombre: "Maria Garcia", rol: "Operador" }
+    ]
+  },
+  version: 0
+};
+
+// ============================================================
+// CLIENTES (homeux-clientes-storage) - 8 clientes Lima, Peru
+// ============================================================
+const clientesData = {
+  state: {
+    clientes: [
+      {
+        id: "cli-001", codigo: "C-0001",
+        nombre: "Carlos", apellido: "Mendoza Rivera",
+        correo: "carlos.mendoza@gmail.com", movil: "+51 987 654 321", telefono: "01 435 2210",
+        tipo_vivienda: "Casa", estado_civil: "Casado",
+        direccion: "Av. Javier Prado Este 1520",
+        ciudad: "San Isidro", pais: "Peru", urbanizacion: "Los Alamos", situacion: "Activo"
+      },
+      {
+        id: "cli-002", codigo: "C-0002",
+        nombre: "Maria Elena", apellido: "Gutierrez Flores",
+        correo: "megutierrez@hotmail.com", movil: "+51 912 345 678", telefono: "01 267 8834",
+        tipo_vivienda: "Apartamento", estado_civil: "Soltero",
+        direccion: "Jr. de la Union 482, Dpto 802",
+        ciudad: "Lima", pais: "Peru", urbanizacion: "Centro Historico", situacion: "Activo"
+      },
+      {
+        id: "cli-003", codigo: "C-0003",
+        nombre: "Roberto", apellido: "Quispe Huaman",
+        correo: "rquispe.h@gmail.com", movil: "+51 945 123 789", telefono: "",
+        tipo_vivienda: "Casa", estado_civil: "Casado",
+        direccion: "Calle Los Pinos 340",
+        ciudad: "Miraflores", pais: "Peru", urbanizacion: "Aurora", situacion: "Activo"
+      },
+      {
+        id: "cli-004", codigo: "C-0004",
+        nombre: "Ana Lucia", apellido: "Vargas Castillo",
+        correo: "avargas@outlook.com", movil: "+51 976 432 100", telefono: "01 512 7743",
+        tipo_vivienda: "Townhouse", estado_civil: "Divorciado",
+        direccion: "Av. La Encalada 1090",
+        ciudad: "Lima", pais: "Peru", urbanizacion: "Monterrico", situacion: "Activo"
+      },
+      {
+        id: "cli-005", codigo: "C-0005",
+        nombre: "Fernando", apellido: "Torres Pachas",
+        correo: "ftorres.pachas@gmail.com", movil: "+51 933 876 543", telefono: "",
+        tipo_vivienda: "Apartamento", estado_civil: "Soltero",
+        direccion: "Av. Arequipa 2850, Dpto 401",
+        ciudad: "Lima", pais: "Peru", urbanizacion: "San Antonio", situacion: "Prospecto"
+      },
+      {
+        id: "cli-006", codigo: "C-0006",
+        nombre: "Lucia", apellido: "Paredes Salazar",
+        correo: "luciaps@gmail.com", movil: "+51 961 222 333", telefono: "01 345 9912",
+        tipo_vivienda: "Casa", estado_civil: "Casado",
+        direccion: "Calle Monte Rosa 270",
+        ciudad: "San Isidro", pais: "Peru", urbanizacion: "Chacarilla", situacion: "Activo"
+      },
+      {
+        id: "cli-007", codigo: "C-0007",
+        nombre: "Miguel Angel", apellido: "Ramirez Ochoa",
+        correo: "mramirez.ochoa@yahoo.com", movil: "+51 998 111 444", telefono: "",
+        tipo_vivienda: "Local Comercial", estado_civil: "Union Libre",
+        direccion: "Av. Petit Thouars 1895",
+        ciudad: "Lima", pais: "Peru", urbanizacion: "Lince", situacion: "Activo"
+      },
+      {
+        id: "cli-008", codigo: "C-0008",
+        nombre: "Patricia", apellido: "Herrera Montalvo",
+        correo: "pherrera.m@gmail.com", movil: "+51 955 777 888", telefono: "01 478 3301",
+        tipo_vivienda: "Casa", estado_civil: "Viudo",
+        direccion: "Jr. Huallaga 1156",
+        ciudad: "Lima", pais: "Peru", urbanizacion: "Barrios Altos", situacion: "Inactivo"
+      }
+    ]
+  },
+  version: 0
+};
+
+// ============================================================
+// PRODUCTOS (homeux-productos-storage) - 10 servicios del hogar
+// ============================================================
+const productosData = {
+  state: {
+    productos: [
+      {
+        id: "prod-001", codigo: "SRV-PLO",
+        nombre: "Servicio de Plomeria General",
+        precio: 150, unidad_medida: "Servicio",
+        descripcion: "Reparacion y mantenimiento de tuberias, grifos, inodoros, lavaderos y sistemas de agua. Incluye diagnostico inicial.",
+        situacion: "Activo"
+      },
+      {
+        id: "prod-002", codigo: "SRV-ELE",
+        nombre: "Servicio de Electricidad Residencial",
+        precio: 180, unidad_medida: "Servicio",
+        descripcion: "Instalacion y reparacion de circuitos electricos, tomacorrientes, interruptores, tableros y cableado general.",
+        situacion: "Activo"
+      },
+      {
+        id: "prod-003", codigo: "SRV-PIN",
+        nombre: "Pintura de Interiores",
+        precio: 25, unidad_medida: "m2",
+        descripcion: "Preparacion de superficie, empastado, lijado y aplicacion de 2 manos de pintura latex lavable. Incluye materiales.",
+        situacion: "Activo"
+      },
+      {
+        id: "prod-004", codigo: "SRV-LIM",
+        nombre: "Limpieza Profunda de Hogar",
+        precio: 200, unidad_medida: "Servicio",
+        descripcion: "Limpieza exhaustiva de todos los ambientes: cocina, banos, salas, dormitorios. Incluye desinfeccion y aromatizacion.",
+        situacion: "Activo"
+      },
+      {
+        id: "prod-005", codigo: "SRV-JAR",
+        nombre: "Mantenimiento de Jardines",
+        precio: 120, unidad_medida: "Servicio",
+        descripcion: "Poda de arboles y arbustos, corte de cesped, fumigacion, abono y riego. Para jardines de hasta 100 m2.",
+        situacion: "Activo"
+      },
+      {
+        id: "prod-006", codigo: "SRV-CER",
+        nombre: "Servicio de Cerrajeria",
+        precio: 80, unidad_medida: "Servicio",
+        descripcion: "Apertura de puertas, cambio de chapas, instalacion de cerraduras de seguridad, copias de llaves.",
+        situacion: "Activo"
+      },
+      {
+        id: "prod-007", codigo: "SRV-CAR",
+        nombre: "Carpinteria y Muebles",
+        precio: 220, unidad_medida: "Servicio",
+        descripcion: "Reparacion de muebles, instalacion de closets, repisas, puertas de madera. Incluye materiales basicos.",
+        situacion: "Activo"
+      },
+      {
+        id: "prod-008", codigo: "SRV-INS",
+        nombre: "Instalacion de Accesorios",
+        precio: 90, unidad_medida: "Servicio",
+        descripcion: "Instalacion de cortinas, espejos, cuadros, repisas flotantes, soportes de TV y accesorios de bano.",
+        situacion: "Activo"
+      },
+      {
+        id: "prod-009", codigo: "SRV-PIS",
+        nombre: "Instalacion de Pisos",
+        precio: 45, unidad_medida: "m2",
+        descripcion: "Instalacion de pisos laminados, vinilicos o ceramicos. Incluye preparacion de base y zocalos.",
+        situacion: "Activo"
+      },
+      {
+        id: "prod-010", codigo: "SRV-REM",
+        nombre: "Remodelacion de Banos",
+        precio: 2500, unidad_medida: "Servicio",
+        descripcion: "Remodelacion completa de bano: cambio de sanitarios, mayolicas, griferia, accesorios e iluminacion. Incluye mano de obra y materiales.",
+        situacion: "Activo"
+      }
+    ]
+  },
+  version: 0
+};
+
+// ============================================================
+// SOLICITUDES (homeux-solicitudes-storage) - 6 solicitudes
+// ============================================================
+const solicitudesData = {
+  state: {
+    solicitudes: [
+      {
+        id: "sol-001", nro_solicitud: "SOL-2026-001", fecha: "2026-03-15",
+        nombre: "Carlos", apellido: "Mendoza Rivera",
+        correo: "carlos.mendoza@gmail.com", movil: "+51 987 654 321",
+        tipo_trabajo: "Plomeria", fecha_estimada_inicio: "2026-03-20",
+        descripcion: "Fuga de agua en la tuberia del segundo piso. El lavadero de la cocina tambien presenta filtracion. Requiere revision urgente del sistema de agua caliente.",
+        tipo_vivienda: "Casa", urbanizacion: "Los Alamos", nro_casa_apto: "Lote 15",
+        ciudad: "San Isidro", pais: "Peru", situacion: "En Proceso"
+      },
+      {
+        id: "sol-002", nro_solicitud: "SOL-2026-002", fecha: "2026-03-18",
+        nombre: "Maria Elena", apellido: "Gutierrez Flores",
+        correo: "megutierrez@hotmail.com", movil: "+51 912 345 678",
+        tipo_trabajo: "Electricidad", fecha_estimada_inicio: "2026-03-25",
+        descripcion: "Los tomacorrientes de la sala y el dormitorio principal no funcionan. Tambien necesito instalar un punto de luz adicional en el estudio.",
+        tipo_vivienda: "Apartamento", urbanizacion: "Centro Historico", nro_casa_apto: "Dpto 802",
+        ciudad: "Lima", pais: "Peru", situacion: "Nueva"
+      },
+      {
+        id: "sol-003", nro_solicitud: "SOL-2026-003", fecha: "2026-03-20",
+        nombre: "Roberto", apellido: "Quispe Huaman",
+        correo: "rquispe.h@gmail.com", movil: "+51 945 123 789",
+        tipo_trabajo: "Pintura", fecha_estimada_inicio: "2026-04-01",
+        descripcion: "Pintar toda la fachada de la casa (aprox 120 m2) y retocar la pintura interior de la sala y comedor. Color exterior: blanco humo. Interior: beige claro.",
+        tipo_vivienda: "Casa", urbanizacion: "Aurora", nro_casa_apto: "340",
+        ciudad: "Miraflores", pais: "Peru", situacion: "Nueva"
+      },
+      {
+        id: "sol-004", nro_solicitud: "SOL-2026-004", fecha: "2026-03-10",
+        nombre: "Ana Lucia", apellido: "Vargas Castillo",
+        correo: "avargas@outlook.com", movil: "+51 976 432 100",
+        tipo_trabajo: "Limpieza Profunda", fecha_estimada_inicio: "2026-03-12",
+        descripcion: "Limpieza profunda de todo el townhouse de 3 pisos despues de remodelacion. Incluye limpieza de ventanas, pisos y banos.",
+        tipo_vivienda: "Townhouse", urbanizacion: "Monterrico", nro_casa_apto: "TH-12",
+        ciudad: "Lima", pais: "Peru", situacion: "Completada"
+      },
+      {
+        id: "sol-005", nro_solicitud: "SOL-2026-005", fecha: "2026-03-22",
+        nombre: "Lucia", apellido: "Paredes Salazar",
+        correo: "luciaps@gmail.com", movil: "+51 961 222 333",
+        tipo_trabajo: "Jardineria", fecha_estimada_inicio: "2026-03-28",
+        descripcion: "Mantenimiento completo del jardin: podar los arboles frutales, cortar el cesped, fumigar contra plagas y sembrar flores de temporada.",
+        tipo_vivienda: "Casa", urbanizacion: "Chacarilla", nro_casa_apto: "270",
+        ciudad: "San Isidro", pais: "Peru", situacion: "Nueva"
+      },
+      {
+        id: "sol-006", nro_solicitud: "SOL-2026-006", fecha: "2026-03-25",
+        nombre: "Miguel Angel", apellido: "Ramirez Ochoa",
+        correo: "mramirez.ochoa@yahoo.com", movil: "+51 998 111 444",
+        tipo_trabajo: "Carpinteria", fecha_estimada_inicio: "2026-04-05",
+        descripcion: "Necesito instalar un closet empotrado en el dormitorio y reparar la puerta principal del local que esta descuadrada.",
+        tipo_vivienda: "Local Comercial", urbanizacion: "Lince", nro_casa_apto: "1895-A",
+        ciudad: "Lima", pais: "Peru", situacion: "En Proceso"
+      }
+    ]
+  },
+  version: 0
+};
+
+// ============================================================
+// PERSONAL (homeux-personal-storage) - 4 tecnicos
+// ============================================================
+const personalData = {
+  state: {
+    personal: [
+      {
+        id: "per-001", codigo: "TEC-001", tipo: "Persona",
+        tipo_identificacion: "DNI", nro_documento: "45678912",
+        nombre: "Jorge Luis", apellido: "Huamani Quispe",
+        correo: "jhuamani@gmail.com", telefono: "01 345 6789", movil: "+51 923 456 789",
+        estado_civil: "Casado", fecha_nacimiento: "1988-05-14",
+        formacion: "Tecnico",
+        habilidades: ["Plomeria Residencial", "Instalacion de Pisos", "Albaileria"],
+        ha_trabajado_con_nosotros: true, fecha_ingreso_plantilla: "2024-02-01",
+        referencias: "Trabajo 5 anos en Constructora Los Andes. Certificado SENCICO en plomeria e instalaciones sanitarias.",
+        situacion: "Activo"
+      },
+      {
+        id: "per-002", codigo: "TEC-002", tipo: "Persona",
+        tipo_identificacion: "DNI", nro_documento: "72345678",
+        nombre: "Edwin", apellido: "Condori Mamani",
+        correo: "econdori.m@hotmail.com", telefono: "", movil: "+51 945 678 123",
+        estado_civil: "Soltero", fecha_nacimiento: "1995-11-22",
+        formacion: "Tecnico",
+        habilidades: ["Electricidad Residencial", "Instalacion de Pisos"],
+        ha_trabajado_con_nosotros: true, fecha_ingreso_plantilla: "2024-06-15",
+        referencias: "Egresado de SENATI en electricidad industrial. 3 anos de experiencia en mantenimiento de edificios.",
+        situacion: "Activo"
+      },
+      {
+        id: "per-003", codigo: "TEC-003", tipo: "Persona",
+        tipo_identificacion: "DNI", nro_documento: "41234567",
+        nombre: "Rosa", apellido: "Flores Choque",
+        correo: "rflores.ch@gmail.com", telefono: "01 567 8901", movil: "+51 967 890 123",
+        estado_civil: "Union Libre", fecha_nacimiento: "1990-08-03",
+        formacion: "Secundaria",
+        habilidades: ["Pintura Interior", "Pintura Exterior", "Limpieza Profunda"],
+        ha_trabajado_con_nosotros: true, fecha_ingreso_plantilla: "2023-09-10",
+        referencias: "10 anos de experiencia en pintura decorativa y acabados. Trabajo en proyectos residenciales en Miraflores y San Isidro.",
+        situacion: "Activo"
+      },
+      {
+        id: "per-004", codigo: "TEC-004", tipo: "Persona",
+        tipo_identificacion: "DNI", nro_documento: "48765432",
+        nombre: "Pedro", apellido: "Sullca Ramos",
+        correo: "psullca@gmail.com", telefono: "", movil: "+51 911 234 567",
+        estado_civil: "Casado", fecha_nacimiento: "1985-02-17",
+        formacion: "Autodidacta",
+        habilidades: ["Carpinteria", "Cerrajeria", "Jardineria"],
+        ha_trabajado_con_nosotros: false, fecha_ingreso_plantilla: "",
+        referencias: "Maestro carpintero independiente con 15 anos de experiencia. Especialista en muebles a medida y closets empotrados.",
+        situacion: "En Evaluacion"
+      }
+    ]
+  },
+  version: 0
+};
+
+// ============================================================
+// COTIZACIONES (homeux-cotizaciones-storage) - 3 cotizaciones
+// ============================================================
+const cotizacionesData = {
+  state: {
+    cotizaciones: [
+      {
+        id: "cot-001", nro_cotizacion: "COT-2026-001", fecha: "2026-03-16",
+        solicitud_id: "sol-001", cliente_id: "cli-001",
+        items: [
+          { producto_id: "prod-001", cantidad: 1, precio_unitario: 150, subtotal: 150 },
+          { producto_id: "prod-008", cantidad: 2, precio_unitario: 90, subtotal: 180 }
+        ],
+        total: 330,
+        observaciones: "Incluye revision completa del sistema de agua del segundo piso y reinstalacion de 2 accesorios de bano. Garantia de 30 dias en mano de obra.",
+        situacion: "En Proceso"
+      },
+      {
+        id: "cot-002", nro_cotizacion: "COT-2026-002", fecha: "2026-03-21",
+        solicitud_id: "sol-003", cliente_id: "cli-003",
+        items: [
+          { producto_id: "prod-003", cantidad: 120, precio_unitario: 25, subtotal: 3000 },
+          { producto_id: "prod-003", cantidad: 40, precio_unitario: 25, subtotal: 1000 }
+        ],
+        total: 4000,
+        observaciones: "Fachada exterior 120 m2 en blanco humo. Interior sala y comedor 40 m2 en beige claro. Incluye empastado, sellador y 2 manos de pintura. Tiempo estimado: 5 dias habiles.",
+        situacion: "Nueva"
+      },
+      {
+        id: "cot-003", nro_cotizacion: "COT-2026-003", fecha: "2026-03-11",
+        solicitud_id: "sol-004", cliente_id: "cli-004",
+        items: [
+          { producto_id: "prod-004", cantidad: 3, precio_unitario: 200, subtotal: 600 }
+        ],
+        total: 600,
+        observaciones: "Limpieza profunda de 3 pisos del townhouse post-remodelacion. Se requiere equipo de 3 personas por 1 dia completo. Incluye productos de limpieza y desinfeccion.",
+        situacion: "Completada"
+      }
+    ]
+  },
+  version: 0
+};
+
+// ============================================================
+// ACTIONS
+// ============================================================
+const ALL_KEYS = [
+  "homeux-config-storage",
+  "homeux-auth-storage",
+  "homeux-clientes-storage",
+  "homeux-solicitudes-storage",
+  "homeux-productos-storage",
+  "homeux-personal-storage",
+  "homeux-cotizaciones-storage"
+];
+
+function cargarDatos() {
+  try {
+    localStorage.setItem("homeux-config-storage",       JSON.stringify(configData));
+    localStorage.setItem("homeux-auth-storage",          JSON.stringify(authData));
+    localStorage.setItem("homeux-clientes-storage",      JSON.stringify(clientesData));
+    localStorage.setItem("homeux-solicitudes-storage",   JSON.stringify(solicitudesData));
+    localStorage.setItem("homeux-productos-storage",     JSON.stringify(productosData));
+    localStorage.setItem("homeux-personal-storage",      JSON.stringify(personalData));
+    localStorage.setItem("homeux-cotizaciones-storage",  JSON.stringify(cotizacionesData));
+
+    var msg = document.getElementById("msg");
+    msg.innerHTML = "<strong>Datos cargados exitosamente:</strong><br>" +
+      "8 Clientes | 6 Solicitudes | 10 Productos | 3 Cotizaciones | 4 Personal<br>" +
+      "Configuracion y Auth actualizados para Lima, Peru<br><br>" +
+      "Redirigiendo al aplicativo...";
+    msg.className = "msg success";
+
+    setTimeout(function() {
+      window.location.href = "http://localhost:3005";
+    }, 2000);
+  } catch (e) {
+    var msg = document.getElementById("msg");
+    msg.textContent = "Error al cargar datos: " + e.message;
+    msg.className = "msg error";
+  }
+}
+
+function limpiarDatos() {
+  if (!confirm("Esto eliminara TODOS los datos de HomeUx del navegador. Continuar?")) return;
+  ALL_KEYS.forEach(function(k) { localStorage.removeItem(k); });
+  var msg = document.getElementById("msg");
+  msg.innerHTML = "<strong>Todos los datos de HomeUx han sido eliminados.</strong><br>Recarga el aplicativo para empezar de cero.";
+  msg.className = "msg success";
+}
+</script>
+</body>
+</html>
