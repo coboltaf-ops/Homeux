@@ -207,7 +207,14 @@ export default function OfertaReforma() {
                       📺 Ver Video Completo
                     </a>
                     <p className="text-gray-600 text-xs mt-3">
-                      O copia: homeux-green.vercel.app/oferta-reforma
+                      <a
+                        href="https://homeux-green.vercel.app/oferta-reforma#video-pintura"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-700 underline"
+                      >
+                        homeux-green.vercel.app/oferta-reforma
+                      </a>
                     </p>
                   </div>
                 ) : servicio.imagenes && servicio.imagenes.length > 0 && (
@@ -389,17 +396,6 @@ export default function OfertaReforma() {
                 </div>
               </div>
 
-              <div className="mt-12 pt-8 border-t border-gray-700">
-                <p className="text-sm text-gray-300 mb-3">Para ver la versión interactiva con video:</p>
-                <a
-                  href="https://homeux-green.vercel.app/oferta-reforma#video-pintura"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-lg font-bold text-blue-400 hover:text-blue-300 underline"
-                >
-                  homeux-green.vercel.app/oferta-reforma
-                </a>
-              </div>
             </div>
           </div>
 
