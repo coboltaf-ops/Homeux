@@ -1,1 +1,9 @@
-@AGENTS.md
+claude
+/primer
+
+exit
+
+
+
+
+
